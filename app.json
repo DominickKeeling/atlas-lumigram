@@ -42,6 +42,15 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "firebaseApiKey": "AIzaSyAX_x5giUu8kRrpJKtfTJuai0wwwrOwZfI",
+      "firebaseAuthDomain": "lumigram-e85aa.firebaseapp.com",
+      "firebaseProjectId": "lumigram-e85aa",
+      "firebaseStorageBucket": "lumigram-e85aa.appspot.com",
+      "firebaseMessagingSenderId": "62669001535",
+      "firebaseAppId": "1:62669001535:web:3dca281976d34043a6798a",
+      "firebaseMeasurementId": "G-R86M4DP95W"
     }
   }
 }

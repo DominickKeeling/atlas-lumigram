@@ -1,10 +1,10 @@
 import { Link, useRouter } from 'expo-router';
 import { openAuthSessionAsync } from 'expo-web-browser';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, Text, View, TextInput, StyleSheet, Image } from 'react-native';
 import { enableExperimentalWebImplementation } from 'react-native-gesture-handler';
 import { auth } from "@/firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 export default function Page() {
   const router = useRouter();
@@ -12,6 +12,10 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    signOut(auth).catch((error) => console.log("Error logging out:", error));
+  }, []);
 
   const login = async () => {
     setError("");
@@ -42,6 +46,7 @@ export default function Page() {
         style={styles.input}
         placeholder="Password"
         value={password}
+        onChangeText={setPassword}
         placeholderTextColor={"#E0E0E0"}
         secureTextEntry={true}
       />

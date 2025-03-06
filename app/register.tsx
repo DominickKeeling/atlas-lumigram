@@ -3,22 +3,24 @@ import { Pressable, Text, View, TextInput, StyleSheet, Image } from 'react-nativ
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { useState } from "react";
+import { useAuth } from '@/components/AuthProvider';
 
 export default function Page() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const auth = useAuth();
 
-  const register = async () => {
-    setError("");
+  async function register() {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.replace("/(tabs)");
-    } catch (error) {
-      setError("Error creating account");
+    await auth.register(email, password);
+    router.replace("/(tabs)");
+
+    } catch (err) {
+      alert("Unable to create account");
     }
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -30,19 +32,21 @@ export default function Page() {
       <TextInput
         style={styles.input}
         placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
         placeholderTextColor={"#E0E0E0"}
         keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
         placeholderTextColor={"#E0E0E0"}
         secureTextEntry
       />
       <Pressable
-        onPress={() => {
-          router.replace("/(tabs)");
-          }}
+        onPress={register}
         style={styles.signInButton}
       >
         <Text style={styles.signInText}>

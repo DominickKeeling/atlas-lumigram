@@ -4,12 +4,20 @@ import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import Loading from '@/components/Loading';
 import { GestureHandlerRootView, TextInput } from 'react-native-gesture-handler';
+import storage from '@/lib/storage';
 
 export default function Page() {
   const [caption, setCaption] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   const { image, openImagePicker, reset } = useImagePicker();
+
+  async function save() {
+    if(!image) return;
+    const name = image?.split("/").pop() as string;
+    const {downloadUrl, metadata} = await storage.upload(image, name )
+    console.log(downloadUrl);
+  }
     
   return (
     <GestureHandlerRootView style={styles.container}>
