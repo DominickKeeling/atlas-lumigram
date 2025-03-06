@@ -1,8 +1,25 @@
 import { Link, useRouter } from 'expo-router';
 import { Pressable, Text, View, TextInput, StyleSheet, Image } from 'react-native';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebaseConfig";
+import { useState } from "react";
 
 export default function Page() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const register = async () => {
+    setError("");
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      router.replace("/(tabs)");
+    } catch (error) {
+      setError("Error creating account");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image

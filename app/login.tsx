@@ -1,8 +1,28 @@
 import { Link, useRouter } from 'expo-router';
+import { openAuthSessionAsync } from 'expo-web-browser';
+import { useState } from 'react';
 import { Pressable, Text, View, TextInput, StyleSheet, Image } from 'react-native';
+import { enableExperimentalWebImplementation } from 'react-native-gesture-handler';
+import { auth } from "@/firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Page() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const login = async () => {
+    setError("");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.replace("/(tabs)");
+    } catch (error) {
+      setError("Invalid email or password.");
+    }
+  }
+  
   return (
     <View style={styles.container}>
       <Image
@@ -13,19 +33,20 @@ export default function Page() {
       <TextInput
         style={styles.input}
         placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
         placeholderTextColor={"#E0E0E0"}
         keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
+        value={password}
         placeholderTextColor={"#E0E0E0"}
-        secureTextEntry
+        secureTextEntry={true}
       />
       <Pressable
-        onPress={() => {
-          router.replace("/(tabs)");
-          }}
+        onPress={login}
         style={styles.signInButton}
       >
         <Text style={styles.signInText}>
