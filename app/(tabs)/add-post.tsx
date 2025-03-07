@@ -5,6 +5,8 @@ import { StyleSheet } from 'react-native';
 import Loading from '@/components/Loading';
 import { GestureHandlerRootView, TextInput } from 'react-native-gesture-handler';
 import storage from '@/lib/storage';
+import { getAuth } from 'firebase/auth';
+import firestore from '@/lib/firestore';
 
 export default function Page() {
   const [caption, setCaption] = useState<string>("");
@@ -13,12 +15,45 @@ export default function Page() {
   const { image, openImagePicker, reset } = useImagePicker();
 
   async function save() {
+    if (loading) return;
     if(!image) return;
-    const name = image?.split("/").pop() as string;
-    const {downloadUrl, metadata} = await storage.upload(image, name )
-    console.log(downloadUrl);
-  }
+
+    const auth = getAuth();
+    const user = auth.currentUser;
     
+    if (!user) {
+      alert("You must be logged in");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const name = image?.split("/").pop() as string;
+      const { downloadUrl, metadata } = await storage.upload(image, name );
+      console.log(downloadUrl);
+      await firestore.addPost({
+        caption: caption,
+        image: downloadUrl,
+        createdAt: new Date(),
+        createdBy: user.getIdToken
+      });
+      setLoading(false);
+      alert("Post added!");
+    } catch (error) {
+      setLoading(false);
+      console.error("Error uploading image:", error);
+      alert("Failed to upload image!");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+    function resetForm() {
+      setCaption("");
+      reset();
+      setLoading(false);
+    }
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.footerContainer}>
@@ -40,10 +75,10 @@ export default function Page() {
               value={caption}
               onChangeText={setCaption}
             />
-            <Pressable style={styles.saveButton} onPress={() => alert("Save")}>
+            <Pressable style={styles.saveButton} onPress={save}>
               <Text style={styles.saveButtonText}>Save</Text>
             </Pressable>
-            <Pressable style={styles.resetButton} onPress={reset}>
+            <Pressable style={styles.resetButton} onPress={resetForm}>
               <Text style={styles.resetButtonText}>Reset</Text>
             </Pressable>
           </View>
