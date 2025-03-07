@@ -32,7 +32,6 @@ export default function Page() {
       <TextInput
         style={styles.input}
         placeholder="Email"
-        value={email}
         onChangeText={setEmail}
         placeholderTextColor={"#E0E0E0"}
         keyboardType="email-address"
@@ -40,7 +39,6 @@ export default function Page() {
       <TextInput
         style={styles.input}
         placeholder="Password"
-        value={password}
         onChangeText={setPassword}
         placeholderTextColor={"#E0E0E0"}
         secureTextEntry

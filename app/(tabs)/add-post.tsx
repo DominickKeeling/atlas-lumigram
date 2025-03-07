@@ -22,7 +22,7 @@ export default function Page() {
     const user = auth.currentUser;
     
     if (!user) {
-      alert("You must be logged in");
+      alert("Unable to upload photo");
       return;
     }
 
